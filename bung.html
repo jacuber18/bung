@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>QuickSpace</title>
+
+<style>
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f7fb;
+  color: #172033;
+  transition: .2s;
+}
+
+header {
+  background: white;
+  border-bottom: 1px solid #ddd;
+  padding: 18px 6%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+}
+
+.logo {
+  color: #4f46e5;
+  font-size: 1.3rem;
+  font-weight: bold;
+}
+
+nav {
+  display: flex;
+  gap: 20px;
+}
+
+nav a {
+  color: #667085;
+  text-decoration: none;
+}
+
+main {
+  max-width: 1000px;
+  margin: auto;
+  padding: 55px 6%;
+}
+
+.hero {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.hero h1 {
+  font-size: clamp(2.2rem, 6vw, 4rem);
+  margin-bottom: 15px;
+}
+
+.hero p {
+  color: #667085;
+  font-size: 1.1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+}
+
+.card,
+.tool {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 24px;
+  margin-top: 18px;
+  box-shadow: 0 8px 25px #00000008;
+}
+
+.card h2 {
+  font-size: 1.15rem;
+}
+
+.card p,
+.tool p {
+  color: #667085;
+  line-height: 1.5;
+}
+
+.icon {
+  font-size: 1.7rem;
+}
+
+button {
+  border: 0;
+  border-radius: 10px;
+  padding: 10px 15px;
+  background: #4f46e5;
+  color: white;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+button:hover {
+  opacity: .85;
+}
+
+.secondary {
+  background: #eef0ff;
+  color: #4f46e5;
+}
+
+input,
+textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #d9dee8;
+  border-radius: 10px;
+  font: inherit;
+}
+
+.row {
+  display: flex;
+  gap: 10px;
+}
+
+.row input {
+  flex: 1;
+}
+
+.result {
+  margin-top: 14px;
+  color: #475467;
+}
+
+/* Dark mode */
+.dark {
+  background: #101828;
+  color: #f9fafb;
+}
+
+.dark header,
+.dark .card,
+.dark .tool {
+  background: #182230;
+  border-color: #263548;
+}
+
+.dark p,
+.dark .result,
+.dark nav a {
+  color: #b7c0ce;
+}
+
+footer {
+  text-align: center;
+  color: #98a2b3;
+  padding: 30px;
+}
+
+@media (max-width: 750px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  nav {
+    display: none;
+  }
+
+  .row {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <div class="logo">QuickSpace</div>
+
+  <nav>
+    <a href="#tools">Tools</a>
+    <a href="#notes">Notes</a>
+    <a href="#about">About</a>
+  </nav>
+
+  <button id="theme">🌙 Theme</button>
+</header>
+
+<main>
+
+<section class="hero">
+  <h1>One simple space for everyday tasks.</h1>
+  <p>
+    A lightweight website with useful tools, notes,
+    and quick actions.
+  </p>
+</section>
+
+<section class="grid" id="tools">
+
+  <article class="card">
+    <div class="icon">📝</div>
+    <h2>Quick Notes</h2>
+    <p>Write and save a note directly in your browser.</p>
+    <button onclick="focusNotes()">Write a note</button>
+  </article>
+
+  <article class="card">
+    <div class="icon">🔢</div>
+    <h2>Calculator</h2>
+    <p>Perform simple arithmetic without leaving the page.</p>
+    <button onclick="focusCalculator()">Calculate</button>
+  </article>
+
+  <article class="card">
+    <div class="icon">⏰</div>
+    <h2>Current Time</h2>
+    <p>Check the current date and time instantly.</p>
+    <button class="secondary" onclick="showTime()">Show time</button>
+  </article>
+
+</section>
+
+<section class="tool" id="calculator">
+  <h2>Calculator</h2>
+
+  <div class="row">
+    <input
+      id="calc"
+      placeholder="Example: 25 * 4 + 10"
+    >
+
+    <button onclick="calculate()">=</button>
+  </div>
+
+  <div class="result" id="calcResult"></div>
+</section>
+
+<section class="tool" id="notes">
+  <h2>Quick Notes</h2>
+
+  <textarea
+    id="note"
+    rows="6"
+    placeholder="Type anything..."
+  ></textarea>
+
+  <br><br>
+
+  <button onclick="saveNote()">Save Note</button>
+  <button class="secondary" onclick="clearNote()">Clear</button>
+
+  <div class="result" id="noteResult"></div>
+</section>
+
+<section class="tool" id="about">
+  <h2>About</h2>
+
+  <p>
+    QuickSpace is a small, responsive website built
+    using only HTML, CSS, and JavaScript.
+  </p>
+</section>
+
+</main>
+
+<footer>
+  Made with HTML, CSS & JavaScript.
+</footer>
+
+<script>
+const $ = id => document.getElementById(id);
+
+/* Navigation */
+function focusNotes() {
+  $("notes").scrollIntoView({ behavior: "smooth" });
+  $("note").focus();
+}
+
+function focusCalculator() {
+  $("calculator").scrollIntoView({ behavior: "smooth" });
+  $("calc").focus();
+}
+
+/* Calculator */
+function calculate() {
+  try {
+    const expression = $("calc").value;
+
+    if (!/^[0-9+\-*/().%\s]+$/.test(expression)) {
+      throw Error();
+    }
+
+    const result = Function(
+      '"use strict"; return (' + expression + ')'
+    )();
+
+    $("calcResult").textContent = "Result: " + result;
+  } catch {
+    $("calcResult").textContent =
+      "Please enter a valid calculation.";
+  }
+}
+
+$("calc").addEventListener("keydown", e => {
+  if (e.key === "Enter") calculate();
+});
+
+/* Time */
+function showTime() {
+  $("calcResult").textContent =
+    "Current time: " + new Date().toLocaleString();
+}
+
+/* Notes */
+$("note").value =
+  localStorage.getItem("quickspace-note") || "";
+
+function saveNote() {
+  localStorage.setItem(
+    "quickspace-note",
+    $("note").value
+  );
+
+  $("noteResult").textContent =
+    "✓ Note saved in your browser.";
+}
+
+function clearNote() {
+  localStorage.removeItem("quickspace-note");
+  $("note").value = "";
+
+  $("noteResult").textContent =
+    "Note cleared.";
+}
+
+/* Dark mode */
+$("theme").onclick = () => {
+  document.body.classList.toggle("dark");
+
+  $("theme").textContent =
+    document.body.classList.contains("dark")
+      ? "☀️ Theme"
+      : "🌙 Theme";
+};
+</script>
+
+</body>
+</html>
